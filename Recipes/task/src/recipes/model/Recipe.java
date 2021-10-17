@@ -32,6 +32,10 @@ public class Recipe {
     private String category;
     private LocalDateTime date;
 
+    @ManyToOne
+    @JoinColumn(name = "usr_fk", referencedColumnName = "user_id")
+    private User user;
+
     @OneToMany(targetEntity = Ingredient.class, cascade = CascadeType.ALL)
     @JoinColumn(name = "ri_fk", referencedColumnName = "id")
     @Size(min = 1,message = BAD_REQUEST_ERROR)

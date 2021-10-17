@@ -4,9 +4,11 @@ import io.micrometer.core.instrument.util.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.web.bind.annotation.*;
 import recipes.model.Recipe;
 import recipes.model.RecipeResponse;
+import recipes.model.User;
 import recipes.service.RecipeService;
 
 import javax.validation.Valid;
@@ -18,6 +20,15 @@ public class Controller {
 
     @Autowired
     RecipeService recipeService;
+    @Autowired
+    PasswordEncoder encoder;
+
+    @PostMapping("/api/register")
+    public ResponseEntity<?> registerUser(@Valid @RequestBody User user) {
+        System.out.println(user);
+        user.setPassword(encoder.encode(user.getPassword()));
+        return new ResponseEntity<>(recipeService.userRegistration(user));
+    }
 
     @GetMapping("/api/recipe/{id}")
     public ResponseEntity<?> getRecipe(@PathVariable int id) {
@@ -57,5 +68,10 @@ public class Controller {
         } else {
             return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
         }
+    }
+
+    @GetMapping("/test")
+    public String test() {
+        return "/test is accessed";
     }
 }
